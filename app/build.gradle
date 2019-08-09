@@ -1,0 +1,82 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 29
+    buildToolsVersion "29.0.1"
+    defaultConfig {
+        applicationId "com.testapp.uniappandroid"
+        minSdkVersion 16
+        targetSdkVersion 29
+        versionCode 1
+        versionName "1.0"
+        flavorDimensions ""
+        ndk {
+            abiFilters 'x86','armeabi-v7a'  //使用uniapp时必须同时选择二者或选其一
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    //使用uniapp时，需复制下面代码
+    /*代码开始*/
+    aaptOptions {
+        additionalParameters '--auto-add-overlay'
+        //noCompress 'foo', 'bar'
+        ignoreAssetsPattern "!.svn:!.git:.*:!CVS:!thumbs.db:!picasa.ini:!*.scc:*~"
+    }
+
+    productFlavors {
+
+        first {
+            applicationId "com.demo.first"
+            manifestPlaceholders = [
+                    APP_ICON:"@drawable/icon",
+                    APP_NAME:"First"
+            ]
+
+        }
+
+        second {
+            applicationId "com.demo.second"
+            manifestPlaceholders = [
+                    APP_ICON:"@drawable/icon",
+                    APP_NAME:"Second"
+            ]
+
+        }
+
+    }
+
+    applicationVariants.all {variant ->
+        variant.outputs.all {output ->
+            output.outputFileName = "${variant.name}.apk"
+        }
+    }
+    /*代码结束*/
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    /*uniApp依赖库*/
+    implementation fileTree(include: ['*.aar'], dir: 'libs')
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    /*uniapp所需库-----------------------开始*/
+    implementation 'com.android.support:recyclerview-v7:26.1.0'
+    implementation 'com.alibaba.android:bindingx-core:1.0.3'
+    implementation 'com.alibaba.android:bindingx_weex_plugin:1.0.3'
+    implementation 'com.squareup.okhttp:okhttp:2.3.0'
+    implementation 'com.squareup.okhttp:okhttp-ws:2.3.0'
+    implementation 'com.alibaba:fastjson:1.1.46.android'
+    implementation 'com.facebook.fresco:fresco:1.13.0'
+    implementation "com.facebook.fresco:animated-gif:1.13.0"
+    /*uniapp所需库-----------------------结束*/
+    // 基座需要，必须添加
+    implementation 'com.github.bumptech.glide:glide:4.9.0'
+}
